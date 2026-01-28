@@ -132,7 +132,7 @@ client_logic = Script("""
 
 def Header():
     return Div(
-        H1("LinkedIn Formatter ✨"),
+        H1("Social Media Formatter ✨"),
         P("Convert GenAI text into elegant, formatted posts.", style="color: #666; font-size: 0.9rem; margin-top: 5px;"),
         cls="header"
     )
@@ -165,7 +165,7 @@ def Toolbar():
 def AppFooter():
     return Div(
         Div(Span("0 chars", id="charCount"), cls="stats", style="color: #666; font-size: 0.85rem;"),
-        Button("Copy for LinkedIn", onclick="copyText()", cls="btn-primary"),
+        Button("Copy", onclick="copyText()", cls="btn-primary"),
         cls="footer"
     )
 
@@ -173,7 +173,7 @@ app, rt = fast_app(hdrs=[app_css])
 
 @rt("/")
 def get():
-    return Titled("LinkedIn Formatter",
+    return Titled("Social Media Formatter",
         Div(
             Header(),
             Toolbar(),
