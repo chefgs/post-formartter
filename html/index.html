@@ -135,11 +135,18 @@
             padding: 32px;
             font-size: 1.05rem;
             line-height: 1.6;
-            resize: none;
             outline: none;
             background: transparent;
             font-family: inherit;
             color: #333;
+            box-sizing: border-box; /* Ensures padding doesn't affect width */
+
+            /* SCROLL & WRAP UPDATES */
+            resize: none;           /* Prevents manual resizing */
+            white-space: pre-wrap;  /* Wraps text to next line */
+            word-wrap: break-word;  /* Breaks long words if necessary */
+            overflow-y: auto;       /* Vertical Scrollbar */
+            overflow-x: hidden;     /* Hides horizontal scrollbar */
         }
 
         /* FOOTER */
@@ -168,6 +175,7 @@
             font-weight: 600;
             font-size: 1rem;
             box-shadow: 0 4px 12px rgba(10, 102, 194, 0.2);
+            cursor: pointer;
         }
 
         .btn-primary:hover {
@@ -265,7 +273,7 @@
     // --- 1. UNICODE MAPS FOR STYLING ---
     const maps = {
         boldSans: {
-            a: '𝗮', b: '𝗯', c: '𝗰', d: '𝗱', e: '𝗲', f: '𝗳', g: '𝗴', h: '𝗵', i: '𝗶', j: '𝗷', k: '𝗸', l: '𝗹', m: '𝗺', n: '𝗻', o: '𝗼', p: '𝗽', q: '𝗾', r: '𝗿', s: '𝘀', t: '𝘁', u: '𝘂', v: '𝘃', w: '𝘄', x: '𝘅', y: '𝘆', z: '𝘇',
+            a: '𝗮', b: '𝗯', c: '𝗰', d: '𝗱', e: '𝗲', f: '𝗳', g: '𝗴', h: '𝗵', i: '𝗶', j: '𝗷', k: '𝗸', l: '𝗹', m: '𝗺', n: '𝗻', o: '𝗼', p: '𝗽', q: '𝗾', r: '𝗿', s: '𝘀', t: '𝘁', u: '𝘂', v: '𝘃', w: '𝘄', x: '𝘅', y: '𝘺', z: '𝘇',
             A: '𝗔', B: '𝗕', C: '𝗖', D: '𝗗', E: '𝗘', F: '𝗙', G: '𝗚', H: '𝗛', I: '𝗜', J: '𝗝', K: '𝗞', L: '𝗟', M: '𝗠', N: '𝗡', O: '𝗢', P: '𝗣', Q: '𝗤', R: '𝗥', S: '𝗦', T: '𝗧', U: '𝗨', V: '𝗩', W: '𝗪', X: '𝗫', Y: '𝗬', Z: '𝗭',
             0: '𝟬', 1: '𝟭', 2: '𝟮', 3: '𝟯', 4: '𝟰', 5: '𝟱', 6: '𝟲', 7: '𝟳', 8: '𝟴', 9: '𝟵'
         },
@@ -279,7 +287,6 @@
         }
     };
 
-    // --- 2. EMOJI KEYWORD MAPPING ---
     const buzzwordEmojiMap = {
         "growth": "📈", "sales": "💰", "money": "💵", "profit": "💸", "team": "🤝",
         "hiring": "📢", "jobs": "💼", "work": "🛠️", "code": "💻", "tech": "🤖",
@@ -290,7 +297,11 @@
         "linkedin": "🟦", "important": "⚠️", "alert": "🚨", "check": "✅", "done": "✅"
     };
 
-    // Helper to get selection
+    const shortcodeMap = {
+        ":rocket:": "🚀", ":fire:": "🔥", ":check:": "✅", ":smile:": "😊", 
+        ":chart:": "📈", ":target:": "🎯", ":brain:": "🧠", ":100:": "💯"
+    };
+
     function getSelection() {
         const start = editor.selectionStart;
         const end = editor.selectionEnd;
@@ -304,9 +315,7 @@
 
         const map = maps[type];
         let res = '';
-        for (let char of sel.text) {
-            res += map[char] || char;
-        }
+        for (let char of sel.text) res += map[char] || char;
         replaceSelection(res);
     }
 
@@ -317,9 +326,7 @@
 
         // Logic: Add \u0332 after every character
         let res = '';
-        for (let char of sel.text) {
-            res += char + '\u0332';
-        }
+        for (let char of sel.text) res += char + '\u0332';
         replaceSelection(res);
     }
 
@@ -331,23 +338,13 @@
         // Regex to find words, simple implementation
         const newText = text.replace(/\b(\w+)\b/g, (match) => {
             const lower = match.toLowerCase();
-            if (buzzwordEmojiMap[lower]) {
-                // Return "Word Emoji"
-                return `${match} ${buzzwordEmojiMap[lower]}`;
-            }
+            if (buzzwordEmojiMap[lower]) return `${match} ${buzzwordEmojiMap[lower]}`;
             return match;
         });
         editor.value = newText;
         updateStats();
         showToast("Magic emojis applied! ✨");
     }
-
-    // Option B: Convert Shortcodes (e.g., :rocket: -> 🚀)
-    // Basic implementation for demonstration
-    const shortcodeMap = {
-        ":rocket:": "🚀", ":fire:": "🔥", ":check:": "✅", ":smile:": "😊", 
-        ":chart:": "📈", ":target:": "🎯", ":brain:": "🧠", ":100:": "💯"
-    };
 
     function convertShortcodes() {
         let text = editor.value;
@@ -371,10 +368,8 @@
 
     function replaceSelection(newText) {
         const start = editor.selectionStart;
-        const end = editor.selectionEnd;
-        editor.value = editor.value.substring(0, start) + newText + editor.value.substring(end);
-        editor.selectionStart = start + newText.length;
-        editor.selectionEnd = start + newText.length;
+        editor.value = editor.value.substring(0, start) + newText + editor.value.substring(editor.selectionEnd);
+        editor.selectionStart = editor.selectionEnd = start + newText.length;
         editor.focus();
         updateStats();
     }
