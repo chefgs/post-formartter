@@ -470,14 +470,35 @@
         if (reverseMaps.boldItalicSans && reverseMaps.boldItalicSans[char]) {
             return new Set(['boldSans', 'italicSans']); // Has both bold and italic
         }
+        if (reverseMaps.boldItalicSerif && reverseMaps.boldItalicSerif[char]) {
+            return new Set(['boldItalicSerif']);
+        }
         if (reverseMaps.boldSans && reverseMaps.boldSans[char]) {
             return new Set(['boldSans']);
+        }
+        if (reverseMaps.boldSerif && reverseMaps.boldSerif[char]) {
+            return new Set(['boldSerif']);
         }
         if (reverseMaps.italicSans && reverseMaps.italicSans[char]) {
             return new Set(['italicSans']);
         }
+        if (reverseMaps.italicSerif && reverseMaps.italicSerif[char]) {
+            return new Set(['italicSerif']);
+        }
+        if (reverseMaps.fraktur && reverseMaps.fraktur[char]) {
+            return new Set(['fraktur']);
+        }
         if (reverseMaps.script && reverseMaps.script[char]) {
             return new Set(['script']);
+        }
+        if (reverseMaps.circular && reverseMaps.circular[char]) {
+            return new Set(['circular']);
+        }
+        if (reverseMaps.square && reverseMaps.square[char]) {
+            return new Set(['square']);
+        }
+        if (reverseMaps.sans && reverseMaps.sans[char] && char !== reverseMaps.sans[char]) {
+            return new Set(['sans']);
         }
         return new Set(); // Plain text
     }
@@ -487,14 +508,35 @@
         if (reverseMaps.boldItalicSans && reverseMaps.boldItalicSans[char]) {
             return reverseMaps.boldItalicSans[char];
         }
+        if (reverseMaps.boldItalicSerif && reverseMaps.boldItalicSerif[char]) {
+            return reverseMaps.boldItalicSerif[char];
+        }
         if (reverseMaps.boldSans && reverseMaps.boldSans[char]) {
             return reverseMaps.boldSans[char];
+        }
+        if (reverseMaps.boldSerif && reverseMaps.boldSerif[char]) {
+            return reverseMaps.boldSerif[char];
         }
         if (reverseMaps.italicSans && reverseMaps.italicSans[char]) {
             return reverseMaps.italicSans[char];
         }
+        if (reverseMaps.italicSerif && reverseMaps.italicSerif[char]) {
+            return reverseMaps.italicSerif[char];
+        }
+        if (reverseMaps.fraktur && reverseMaps.fraktur[char]) {
+            return reverseMaps.fraktur[char];
+        }
         if (reverseMaps.script && reverseMaps.script[char]) {
             return reverseMaps.script[char];
+        }
+        if (reverseMaps.circular && reverseMaps.circular[char]) {
+            return reverseMaps.circular[char];
+        }
+        if (reverseMaps.square && reverseMaps.square[char]) {
+            return reverseMaps.square[char];
+        }
+        if (reverseMaps.sans && reverseMaps.sans[char]) {
+            return reverseMaps.sans[char];
         }
         return char;
     }
@@ -545,15 +587,35 @@
             if (newFormats.has('boldSans') && newFormats.has('italicSans')) {
                 // Apply bold+italic combination
                 result = maps.boldItalicSans[result] || result;
+            } else if (newFormats.has('boldItalicSerif')) {
+                result = maps.boldItalicSerif[result] || result;
             } else if (newFormats.has('boldSans')) {
-                // Apply only bold
+                // Apply only bold sans
                 result = maps.boldSans[result] || result;
+            } else if (newFormats.has('boldSerif')) {
+                // Apply only bold serif
+                result = maps.boldSerif[result] || result;
             } else if (newFormats.has('italicSans')) {
-                // Apply only italic
+                // Apply only italic sans
                 result = maps.italicSans[result] || result;
+            } else if (newFormats.has('italicSerif')) {
+                // Apply only italic serif
+                result = maps.italicSerif[result] || result;
+            } else if (newFormats.has('fraktur')) {
+                // Apply fraktur
+                result = maps.fraktur[result] || result;
             } else if (newFormats.has('script')) {
                 // Apply script
                 result = maps.script[result] || result;
+            } else if (newFormats.has('circular')) {
+                // Apply circular
+                result = maps.circular[result] || result;
+            } else if (newFormats.has('square')) {
+                // Apply square
+                result = maps.square[result] || result;
+            } else if (newFormats.has('sans')) {
+                // Apply sans (plain text)
+                result = maps.sans[result] || result;
             }
 
             res += result;
