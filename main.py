@@ -173,4 +173,7 @@ def get():
         client_logic 
     )
 
-serve()
+# ONLY run the server if running this file directly (Localhost)
+# Vercel will ignore this block and just look for the 'app' variable above
+if __name__ == '__main__':
+    serve()
